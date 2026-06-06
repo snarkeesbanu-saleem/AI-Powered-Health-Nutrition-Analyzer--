@@ -1,0 +1,8 @@
+{
+  "name": "AI-powered-Health-Nutrition-Analyzer",
+  "description": "An AI-powered health and nutrition analyzer tool that calculates BMI, tracks weight, and provides personalized meal recommendations.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
