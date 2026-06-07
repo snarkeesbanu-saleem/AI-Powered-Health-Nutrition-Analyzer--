@@ -32,59 +32,71 @@ export const getRecommendations = createServerFn({ method: "GET" })
     if (!API_KEY) {
       console.warn("No AI API keys configured. Returning simulated Indian diet recommendations.");
       const mockResult = {
-        summary: "Based on your South Indian fitness goal of maintaining a healthy body index, your diet shows balanced carbohydrates, but could benefit from a structured increase in clean plant proteins like lentils and fiber-rich local grains.",
+        summary:
+          "Based on your South Indian fitness goal of maintaining a healthy body index, your diet shows balanced carbohydrates, but could benefit from a structured increase in clean plant proteins like lentils and fiber-rich local grains.",
         daily_targets: {
           calories: 2100,
           protein_g: 75,
           carbs_g: 280,
           fats_g: 65,
           fiber_g: 30,
-          water_ml: 2500
+          water_ml: 2500,
         },
         recommendations: [
           {
             category: "meal_plan",
             title: "Introduce High-Protein Breakfasts",
-            description: "Shift towards Sprouts Salad, Moong Dal Chilla, or high-protein Idli made from ragi/oats to kickstart protein synthesis in the morning.",
-            priority: "high"
+            description:
+              "Shift towards Sprouts Salad, Moong Dal Chilla, or high-protein Idli made from ragi/oats to kickstart protein synthesis in the morning.",
+            priority: "high",
           },
           {
             category: "habit",
             title: "Hydration Balance",
-            description: "Drink 500ml water 30 minutes before main meals to aid digestion and optimize satiety levels.",
-            priority: "medium"
+            description:
+              "Drink 500ml water 30 minutes before main meals to aid digestion and optimize satiety levels.",
+            priority: "medium",
           },
           {
             category: "substitution",
             title: "Refined Carb Substitution",
-            description: "Swap conventional white rice during lunch with brown rice, Kerala matta rice, or foxtail millet.",
-            priority: "high"
+            description:
+              "Swap conventional white rice during lunch with brown rice, Kerala matta rice, or foxtail millet.",
+            priority: "high",
           },
           {
             category: "exercise",
             title: "Post-Meal Walking",
-            description: "Incorporate a brisk 15-minute walk after dinner to improve insulin sensitivity and support digestion.",
-            priority: "medium"
-          }
+            description:
+              "Incorporate a brisk 15-minute walk after dinner to improve insulin sensitivity and support digestion.",
+            priority: "medium",
+          },
         ],
         meal_plan: {
-          breakfast: "Ragi Dosa or Oats Idli served with vegetable sambar and mint chutney (protein & fiber boost)",
+          breakfast:
+            "Ragi Dosa or Oats Idli served with vegetable sambar and mint chutney (protein & fiber boost)",
           lunch: "Brown rice, mixed vegetable curry, thick dal tadka, and a bowl of fresh curd",
-          dinner: "Two multigrain rotis, palak paneer (topped with minimal oil), and cucumber raita",
-          snacks: ["A handful of roasted chana or almonds", "Green tea with freshly squeezed lemon"]
+          dinner:
+            "Two multigrain rotis, palak paneer (topped with minimal oil), and cucumber raita",
+          snacks: [
+            "A handful of roasted chana or almonds",
+            "Green tea with freshly squeezed lemon",
+          ],
         },
         healthier_alternatives: [
           {
             current: "Refined White Rice",
             alternative: "Foxtail Millet / Matta Rice",
-            reason: "Provides a lower glycemic index, preventing sudden blood sugar spikes and offering more sustained dietary fiber."
+            reason:
+              "Provides a lower glycemic index, preventing sudden blood sugar spikes and offering more sustained dietary fiber.",
           },
           {
             current: "Deep Fried Snacks (Samosa/Pakora)",
             alternative: "Roasted Makhana / Boiled Sprouts Chat",
-            reason: "Reduces saturated fat intake significantly while adding rich source of calcium and plant-based protein."
-          }
-        ]
+            reason:
+              "Reduces saturated fat intake significantly while adding rich source of calcium and plant-based protein.",
+          },
+        ],
       };
       return { recommendations: mockResult };
     }
@@ -92,15 +104,19 @@ export const getRecommendations = createServerFn({ method: "GET" })
     const prompt = `You are an expert Indian nutritionist and dietician. Based on the user's profile and recent eating habits, provide personalized dietary recommendations.
 
 User Profile:
-${profile ? JSON.stringify({
-  age: profile.age,
-  gender: profile.gender,
-  weight_kg: profile.weight_kg,
-  height_cm: profile.height_cm,
-  fitness_goal: profile.fitness_goal,
-  activity_level: profile.activity_level,
-  target_weight_kg: profile.target_weight_kg,
-}) : "No profile set yet"}
+${
+  profile
+    ? JSON.stringify({
+        age: profile.age,
+        gender: profile.gender,
+        weight_kg: profile.weight_kg,
+        height_cm: profile.height_cm,
+        fitness_goal: profile.fitness_goal,
+        activity_level: profile.activity_level,
+        target_weight_kg: profile.target_weight_kg,
+      })
+    : "No profile set yet"
+}
 
 Recent Food Log (last 7 days, up to 20 entries):
 ${JSON.stringify(foodLogs || [])}
@@ -156,7 +172,10 @@ Return ONLY valid JSON, no markdown, no extra text. Focus on practical, cultural
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
-            { role: "system", content: "You are a nutrition expert. Always respond with valid JSON only." },
+            {
+              role: "system",
+              content: "You are a nutrition expert. Always respond with valid JSON only.",
+            },
             { role: "user", content: prompt },
           ],
           max_tokens: 2048,
@@ -173,20 +192,21 @@ Return ONLY valid JSON, no markdown, no extra text. Focus on practical, cultural
       content = result.choices?.[0]?.message?.content || "";
     } else {
       // Direct official Google Gemini REST API call
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            generationConfig: {
+              responseMimeType: "application/json",
+            },
+          }),
         },
-        body: JSON.stringify({
-          contents: [
-            { role: "user", parts: [{ text: prompt }] }
-          ],
-          generationConfig: {
-            responseMimeType: "application/json"
-          }
-        }),
-      });
+      );
 
       if (!response.ok) {
         const text = await response.text();

@@ -8,7 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Activity, Ruler, Weight, Target, Info } from "lucide-react";
 import { toast } from "sonner";
 
@@ -34,9 +40,22 @@ function calculateBMI(weightKg: number, heightCm: number) {
 }
 
 function bmiInfo(bmi: number) {
-  if (bmi < 18.5) return { label: "Underweight", color: "text-blue-400", bg: "bg-blue-400/10", range: "< 18.5" };
-  if (bmi < 25) return { label: "Healthy Weight", color: "text-green-400", bg: "bg-green-400/10", range: "18.5 - 24.9" };
-  if (bmi < 30) return { label: "Overweight", color: "text-yellow-400", bg: "bg-yellow-400/10", range: "25 - 29.9" };
+  if (bmi < 18.5)
+    return { label: "Underweight", color: "text-blue-400", bg: "bg-blue-400/10", range: "< 18.5" };
+  if (bmi < 25)
+    return {
+      label: "Healthy Weight",
+      color: "text-green-400",
+      bg: "bg-green-400/10",
+      range: "18.5 - 24.9",
+    };
+  if (bmi < 30)
+    return {
+      label: "Overweight",
+      color: "text-yellow-400",
+      bg: "bg-yellow-400/10",
+      range: "25 - 29.9",
+    };
   return { label: "Obese", color: "text-red-400", bg: "bg-red-400/10", range: "30+" };
 }
 
@@ -107,24 +126,43 @@ function BMIPage() {
           <Label className="text-sm">Weight (kg)</Label>
           <div className="relative">
             <Weight className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input value={weight} onChange={(e) => setWeight(e.target.value)} type="number" placeholder="70" className="pl-9" />
+            <Input
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              type="number"
+              placeholder="70"
+              className="pl-9"
+            />
           </div>
         </div>
         <div className="space-y-1.5">
           <Label className="text-sm">Height (cm)</Label>
           <div className="relative">
             <Ruler className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input value={height} onChange={(e) => setHeight(e.target.value)} type="number" placeholder="170" className="pl-9" />
+            <Input
+              value={height}
+              onChange={(e) => setHeight(e.target.value)}
+              type="number"
+              placeholder="170"
+              className="pl-9"
+            />
           </div>
         </div>
         <div className="space-y-1.5">
           <Label className="text-sm">Age</Label>
-          <Input value={age} onChange={(e) => setAge(e.target.value)} type="number" placeholder="25" />
+          <Input
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            type="number"
+            placeholder="25"
+          />
         </div>
         <div className="space-y-1.5">
           <Label className="text-sm">Gender</Label>
           <Select value={gender} onValueChange={setGender}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="male">Male</SelectItem>
               <SelectItem value="female">Female</SelectItem>
@@ -135,7 +173,9 @@ function BMIPage() {
         <div className="space-y-1.5">
           <Label className="text-sm">Fitness Goal</Label>
           <Select value={goal} onValueChange={setGoal}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="lose">Lose Weight</SelectItem>
               <SelectItem value="maintain">Maintain Weight</SelectItem>
@@ -147,7 +187,13 @@ function BMIPage() {
           <Label className="text-sm">Target Weight (kg)</Label>
           <div className="relative">
             <Target className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input value={targetWeight} onChange={(e) => setTargetWeight(e.target.value)} type="number" placeholder="65" className="pl-9" />
+            <Input
+              value={targetWeight}
+              onChange={(e) => setTargetWeight(e.target.value)}
+              type="number"
+              placeholder="65"
+              className="pl-9"
+            />
           </div>
         </div>
       </div>
@@ -159,14 +205,19 @@ function BMIPage() {
       {bmi && info && (
         <Card className="mt-6 border-border/50 bg-card">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg" style={{ fontFamily: "'Lora', serif" }}>
+            <CardTitle
+              className="flex items-center gap-2 text-lg"
+              style={{ fontFamily: "'Lora', serif" }}
+            >
               <Activity className="h-5 w-5 text-primary" />
               Your BMI Result
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className={`flex h-20 w-20 flex-col items-center justify-center rounded-2xl ${info.bg}`}>
+              <div
+                className={`flex h-20 w-20 flex-col items-center justify-center rounded-2xl ${info.bg}`}
+              >
                 <span className="text-2xl font-bold text-foreground">{bmi.toFixed(1)}</span>
               </div>
               <div>
@@ -179,7 +230,9 @@ function BMIPage() {
               <div className="rounded-lg bg-secondary/20 p-3">
                 <div className="flex items-center gap-2">
                   <Info className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-xs font-medium text-muted-foreground">Ideal Weight Range</span>
+                  <span className="text-xs font-medium text-muted-foreground">
+                    Ideal Weight Range
+                  </span>
                 </div>
                 <p className="mt-1 text-sm text-foreground">
                   For your height, a healthy weight is between {ideal.min} kg and {ideal.max} kg
@@ -194,8 +247,8 @@ function BMIPage() {
                   Target weight: {targetWeight} kg
                   {weight && (
                     <span className="text-muted-foreground">
-                      {" "}(
-                      {Math.abs(parseFloat(targetWeight) - parseFloat(weight)).toFixed(1)} kg{" "}
+                      {" "}
+                      ({Math.abs(parseFloat(targetWeight) - parseFloat(weight)).toFixed(1)} kg{" "}
                       {parseFloat(targetWeight) < parseFloat(weight) ? "to lose" : "to gain"})
                     </span>
                   )}

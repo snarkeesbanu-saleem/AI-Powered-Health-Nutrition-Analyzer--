@@ -10,7 +10,15 @@ import { Label } from "@/components/ui/label";
 import { Scale, TrendingDown, TrendingUp, Minus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 const weightHistoryQueryOptions = queryOptions({
   queryKey: ["weight-history"],
@@ -38,13 +46,15 @@ function WeightPage() {
   const history = data?.history || [];
 
   const chartData = history.map((h) => ({
-    date: new Date(h.logged_at + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    date: new Date(h.logged_at + "T00:00:00").toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    }),
     weight: h.weight_kg,
   }));
 
-  const trend = history.length >= 2
-    ? history[history.length - 1].weight_kg - history[0].weight_kg
-    : 0;
+  const trend =
+    history.length >= 2 ? history[history.length - 1].weight_kg - history[0].weight_kg : 0;
 
   const handleAdd = async () => {
     const w = parseFloat(newWeight);
@@ -95,7 +105,11 @@ function WeightPage() {
               </div>
             </div>
             <Button onClick={handleAdd} disabled={saving} className="gap-2">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Scale className="h-4 w-4" />}
+              {saving ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Scale className="h-4 w-4" />
+              )}
               Log Weight
             </Button>
           </div>
@@ -114,7 +128,9 @@ function WeightPage() {
                 <Minus className="h-4 w-4 text-muted-foreground" />
               )}
               <span className="text-sm font-medium text-foreground">
-                {trend === 0 ? "No change" : `${Math.abs(trend).toFixed(1)} kg ${trend < 0 ? "lost" : "gained"}`}
+                {trend === 0
+                  ? "No change"
+                  : `${Math.abs(trend).toFixed(1)} kg ${trend < 0 ? "lost" : "gained"}`}
               </span>
             </div>
             <span className="text-xs text-muted-foreground">
@@ -133,8 +149,16 @@ function WeightPage() {
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                    <XAxis dataKey="date" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={{ stroke: "rgba(255,255,255,0.1)" }} />
-                    <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={{ stroke: "rgba(255,255,255,0.1)" }} domain={["auto", "auto"]} />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fill: "#94a3b8", fontSize: 10 }}
+                      axisLine={{ stroke: "rgba(255,255,255,0.1)" }}
+                    />
+                    <YAxis
+                      tick={{ fill: "#94a3b8", fontSize: 10 }}
+                      axisLine={{ stroke: "rgba(255,255,255,0.1)" }}
+                      domain={["auto", "auto"]}
+                    />
                     <Tooltip
                       contentStyle={{
                         backgroundColor: "#1a1a2e",
@@ -165,7 +189,9 @@ function WeightPage() {
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
             <Scale className="h-10 w-10 text-muted-foreground/50" />
             <p className="text-sm text-muted-foreground">No weight entries yet.</p>
-            <p className="text-xs text-muted-foreground">Log your first weight above to start tracking.</p>
+            <p className="text-xs text-muted-foreground">
+              Log your first weight above to start tracking.
+            </p>
           </CardContent>
         </Card>
       )}

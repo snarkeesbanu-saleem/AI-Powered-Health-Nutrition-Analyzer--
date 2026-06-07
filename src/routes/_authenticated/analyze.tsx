@@ -5,7 +5,19 @@ import { analyzeFoodImage } from "@/lib/food-analysis.functions";
 import { addFoodLog } from "@/lib/nutrition.functions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Camera, Upload, Loader2, CheckCircle2, Flame, Beef, Wheat, Droplet, Leaf, Candy, Info } from "lucide-react";
+import {
+  Camera,
+  Upload,
+  Loader2,
+  CheckCircle2,
+  Flame,
+  Beef,
+  Wheat,
+  Droplet,
+  Leaf,
+  Candy,
+  Info,
+} from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/analyze")({
@@ -143,7 +155,11 @@ function AnalyzePage() {
           ) : (
             <div className="space-y-4">
               <div className="relative overflow-hidden rounded-xl">
-                <img src={preview} alt="Food preview" className="w-full max-h-80 object-cover rounded-xl" />
+                <img
+                  src={preview}
+                  alt="Food preview"
+                  className="w-full max-h-80 object-cover rounded-xl"
+                />
               </div>
 
               {!analysis && !analyzing && (
@@ -161,7 +177,9 @@ function AnalyzePage() {
               {analyzing && (
                 <div className="flex items-center gap-3 rounded-lg bg-secondary/30 p-4">
                   <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                  <span className="text-sm text-muted-foreground">Analyzing your meal with AI...</span>
+                  <span className="text-sm text-muted-foreground">
+                    Analyzing your meal with AI...
+                  </span>
                 </div>
               )}
             </div>
@@ -190,22 +208,67 @@ function AnalyzePage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <NutrientBox icon={<Flame className="h-4 w-4" />} label="Calories" value={`${Math.round(analysis.nutrition_per_serving?.calories || 0)}`} unit="kcal" color="text-primary" />
-                <NutrientBox icon={<Beef className="h-4 w-4" />} label="Protein" value={`${(analysis.nutrition_per_serving?.protein_g || 0).toFixed(1)}`} unit="g" color="text-neon-blue" />
-                <NutrientBox icon={<Wheat className="h-4 w-4" />} label="Carbs" value={`${(analysis.nutrition_per_serving?.carbs_g || 0).toFixed(1)}`} unit="g" color="text-neon-purple" />
-                <NutrientBox icon={<Droplet className="h-4 w-4" />} label="Fats" value={`${(analysis.nutrition_per_serving?.fats_g || 0).toFixed(1)}`} unit="g" color="text-chart-3" />
+                <NutrientBox
+                  icon={<Flame className="h-4 w-4" />}
+                  label="Calories"
+                  value={`${Math.round(analysis.nutrition_per_serving?.calories || 0)}`}
+                  unit="kcal"
+                  color="text-primary"
+                />
+                <NutrientBox
+                  icon={<Beef className="h-4 w-4" />}
+                  label="Protein"
+                  value={`${(analysis.nutrition_per_serving?.protein_g || 0).toFixed(1)}`}
+                  unit="g"
+                  color="text-neon-blue"
+                />
+                <NutrientBox
+                  icon={<Wheat className="h-4 w-4" />}
+                  label="Carbs"
+                  value={`${(analysis.nutrition_per_serving?.carbs_g || 0).toFixed(1)}`}
+                  unit="g"
+                  color="text-neon-purple"
+                />
+                <NutrientBox
+                  icon={<Droplet className="h-4 w-4" />}
+                  label="Fats"
+                  value={`${(analysis.nutrition_per_serving?.fats_g || 0).toFixed(1)}`}
+                  unit="g"
+                  color="text-chart-3"
+                />
               </div>
 
               <div className="grid grid-cols-3 gap-3">
-                <NutrientBox icon={<Leaf className="h-4 w-4" />} label="Fiber" value={`${(analysis.nutrition_per_serving?.fiber_g || 0).toFixed(1)}`} unit="g" color="text-green-400" />
-                <NutrientBox icon={<Candy className="h-4 w-4" />} label="Sugar" value={`${(analysis.nutrition_per_serving?.sugar_g || 0).toFixed(1)}`} unit="g" color="text-yellow-400" />
-                <NutrientBox icon={<Leaf className="h-4 w-4" />} label="Sodium" value={`${Math.round(analysis.nutrition_per_serving?.sodium_mg || 0)}`} unit="mg" color="text-red-400" />
+                <NutrientBox
+                  icon={<Leaf className="h-4 w-4" />}
+                  label="Fiber"
+                  value={`${(analysis.nutrition_per_serving?.fiber_g || 0).toFixed(1)}`}
+                  unit="g"
+                  color="text-green-400"
+                />
+                <NutrientBox
+                  icon={<Candy className="h-4 w-4" />}
+                  label="Sugar"
+                  value={`${(analysis.nutrition_per_serving?.sugar_g || 0).toFixed(1)}`}
+                  unit="g"
+                  color="text-yellow-400"
+                />
+                <NutrientBox
+                  icon={<Leaf className="h-4 w-4" />}
+                  label="Sodium"
+                  value={`${Math.round(analysis.nutrition_per_serving?.sodium_mg || 0)}`}
+                  unit="mg"
+                  color="text-red-400"
+                />
               </div>
 
               {analysis.health_tags && analysis.health_tags.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {analysis.health_tags.map((tag: string) => (
-                    <span key={tag} className="rounded-full bg-secondary/50 px-2.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                    <span
+                      key={tag}
+                      className="rounded-full bg-secondary/50 px-2.5 py-0.5 text-[10px] font-medium text-muted-foreground"
+                    >
                       {tag.replace("_", " ")}
                     </span>
                   ))}
@@ -224,7 +287,11 @@ function AnalyzePage() {
           <div className="flex gap-2">
             {!saved ? (
               <Button onClick={handleSave} disabled={saving} className="gap-2">
-                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+                {saving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <CheckCircle2 className="h-4 w-4" />
+                )}
                 {saving ? "Saving..." : "Save to Food Log"}
               </Button>
             ) : (
@@ -243,7 +310,19 @@ function AnalyzePage() {
   );
 }
 
-function NutrientBox({ icon, label, value, unit, color }: { icon: React.ReactNode; label: string; value: string; unit: string; color: string }) {
+function NutrientBox({
+  icon,
+  label,
+  value,
+  unit,
+  color,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  unit: string;
+  color: string;
+}) {
   return (
     <div className="flex flex-col items-center gap-1.5 rounded-lg border border-border/30 bg-secondary/20 p-3 text-center">
       <div className={color}>{icon}</div>
@@ -258,9 +337,20 @@ function NutrientBox({ icon, label, value, unit, color }: { icon: React.ReactNod
 
 function SparklesIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-      <path d="M5 3v4" /><path d="M19 17v4" /><path d="M3 5h4" /><path d="M17 19h4" />
+      <path d="M5 3v4" />
+      <path d="M19 17v4" />
+      <path d="M3 5h4" />
+      <path d="M17 19h4" />
     </svg>
   );
 }

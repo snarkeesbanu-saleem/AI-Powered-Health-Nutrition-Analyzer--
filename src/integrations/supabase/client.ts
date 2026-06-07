@@ -1,25 +1,25 @@
-import { createClient } from '@supabase/supabase-js';
-import type { Database } from './types';
+import { createClient } from "@supabase/supabase-js";
+import type { Database } from "./types";
 
 // Simple listeners for custom mock auth flows
 const listeners: any[] = [];
 function triggerAuthChange(event: string, session: any) {
-  listeners.forEach(cb => cb(event, session));
+  listeners.forEach((cb) => cb(event, session));
 }
 
 export function getMockSession() {
-  if (typeof window !== 'undefined') {
-    const userStr = localStorage.getItem('mock_supabase_user');
+  if (typeof window !== "undefined") {
+    const userStr = localStorage.getItem("mock_supabase_user");
     if (userStr) {
       try {
         const user = JSON.parse(userStr);
         return {
           session: {
-            access_token: `${user.id}:${user.user_metadata?.username || 'user'}:${user.email}`,
+            access_token: `${user.id}:${user.user_metadata?.username || "user"}:${user.email}`,
             expires_at: 9999999999,
             expires_in: 9999999999,
-            refresh_token: 'mock-refresh-token',
-            token_type: 'bearer',
+            refresh_token: "mock-refresh-token",
+            token_type: "bearer",
             user: user,
           },
           user,
@@ -33,8 +33,8 @@ export function getMockSession() {
 }
 
 export async function loadMockDb(): Promise<any> {
-  if (typeof window !== 'undefined') {
-    const data = localStorage.getItem('mock_supabase_db');
+  if (typeof window !== "undefined") {
+    const data = localStorage.getItem("mock_supabase_db");
     if (data) {
       try {
         return JSON.parse(data);
@@ -48,8 +48,8 @@ export async function loadMockDb(): Promise<any> {
       g._mockSupabaseDb = {};
       try {
         const fs = await new Function("return import('fs')")();
-        if (fs.existsSync('mock-db.json')) {
-          const text = fs.readFileSync('mock-db.json', 'utf-8');
+        if (fs.existsSync("mock-db.json")) {
+          const text = fs.readFileSync("mock-db.json", "utf-8");
           g._mockSupabaseDb = JSON.parse(text);
         }
       } catch (e) {
@@ -62,14 +62,14 @@ export async function loadMockDb(): Promise<any> {
 }
 
 export async function saveMockDb(db: any) {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('mock_supabase_db', JSON.stringify(db));
+  if (typeof window !== "undefined") {
+    localStorage.setItem("mock_supabase_db", JSON.stringify(db));
   } else {
     const g = globalThis as any;
     g._mockSupabaseDb = db;
     try {
       const fs = await new Function("return import('fs')")();
-      fs.writeFileSync('mock-db.json', JSON.stringify(db, null, 2), 'utf-8');
+      fs.writeFileSync("mock-db.json", JSON.stringify(db, null, 2), "utf-8");
     } catch (e) {
       // ignore
     }
@@ -78,7 +78,7 @@ export async function saveMockDb(db: any) {
 
 class MockQueryBuilder {
   private tableName: string;
-  private filters: Array<{ field: string; op: 'eq' | 'gte'; value: any }> = [];
+  private filters: Array<{ field: string; op: "eq" | "gte"; value: any }> = [];
   private orderCol: string | null = null;
   private orderAsc: boolean = true;
   private limitCount: number | null = null;
@@ -98,12 +98,12 @@ class MockQueryBuilder {
   }
 
   eq(field: string, value: any) {
-    this.filters.push({ field, op: 'eq', value });
+    this.filters.push({ field, op: "eq", value });
     return this;
   }
 
   gte(field: string, value: any) {
-    this.filters.push({ field, op: 'gte', value });
+    this.filters.push({ field, op: "gte", value });
     return this;
   }
 
@@ -161,12 +161,12 @@ class MockQueryBuilder {
     table.forEach((item, index) => {
       let isMatch = true;
       for (const filter of this.filters) {
-        if (filter.op === 'eq') {
+        if (filter.op === "eq") {
           if (item[filter.field] !== filter.value) {
             isMatch = false;
             break;
           }
-        } else if (filter.op === 'gte') {
+        } else if (filter.op === "gte") {
           if (item[filter.field] < filter.value) {
             isMatch = false;
             break;
@@ -190,7 +190,7 @@ class MockQueryBuilder {
       for (const row of this.insertData) {
         const item = {
           id: row.id || `mock-id-${Math.random().toString(36).substring(2, 11)}`,
-          logged_at: row.logged_at || new Date().toISOString().split('T')[0],
+          logged_at: row.logged_at || new Date().toISOString().split("T")[0],
           created_at: row.created_at || new Date().toISOString(),
           ...row,
         };
@@ -204,12 +204,26 @@ class MockQueryBuilder {
     if (this.upsertData) {
       const upserted: any[] = [];
       for (const row of this.upsertData) {
-        const uniqueField = this.tableName === 'profiles' ? 'user_id' : 'id';
-        const existingIndex = db[this.tableName].findIndex((item: any) => item[uniqueField] === row[uniqueField]);
+        const uniqueField = this.tableName === "profiles" ? "user_id" : "id";
+        const existingIndex = db[this.tableName].findIndex(
+          (item: any) => item[uniqueField] === row[uniqueField],
+        );
         const item = {
-          id: row.id || (existingIndex >= 0 ? db[this.tableName][existingIndex].id : `mock-id-${Math.random().toString(36).substring(2, 11)}`),
-          logged_at: row.logged_at || (existingIndex >= 0 ? db[this.tableName][existingIndex].logged_at : new Date().toISOString().split('T')[0]),
-          created_at: row.created_at || (existingIndex >= 0 ? db[this.tableName][existingIndex].created_at : new Date().toISOString()),
+          id:
+            row.id ||
+            (existingIndex >= 0
+              ? db[this.tableName][existingIndex].id
+              : `mock-id-${Math.random().toString(36).substring(2, 11)}`),
+          logged_at:
+            row.logged_at ||
+            (existingIndex >= 0
+              ? db[this.tableName][existingIndex].logged_at
+              : new Date().toISOString().split("T")[0]),
+          created_at:
+            row.created_at ||
+            (existingIndex >= 0
+              ? db[this.tableName][existingIndex].created_at
+              : new Date().toISOString()),
           updated_at: new Date().toISOString(),
           ...row,
         };
@@ -260,7 +274,7 @@ class MockQueryBuilder {
 
     if (this.isSingle) {
       if (results.length === 0) {
-        return { data: null, error: { message: 'Row not found', code: 'PGRST116' } };
+        return { data: null, error: { message: "Row not found", code: "PGRST116" } };
       }
       return { data: results[0], error: null };
     }
@@ -291,7 +305,7 @@ export function createMockSupabaseClient() {
         listeners.push(callback);
         const session = getMockSession().session;
         setTimeout(() => {
-          callback(session ? 'SIGNED_IN' : 'SIGNED_OUT', session);
+          callback(session ? "SIGNED_IN" : "SIGNED_OUT", session);
         }, 0);
         return {
           data: {
@@ -305,15 +319,15 @@ export function createMockSupabaseClient() {
         };
       },
       async signUp({ email, password, options }: any) {
-        const username = options?.data?.username || email.split('@')[0];
+        const username = options?.data?.username || email.split("@")[0];
         const user = {
           id: `mock-user-${Math.random().toString(36).substring(2, 11)}`,
           email,
           user_metadata: { username },
           created_at: new Date().toISOString(),
         };
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('mock_supabase_user', JSON.stringify(user));
+        if (typeof window !== "undefined") {
+          localStorage.setItem("mock_supabase_user", JSON.stringify(user));
         }
 
         const db = await loadMockDb();
@@ -322,27 +336,27 @@ export function createMockSupabaseClient() {
           id: user.id,
           user_id: user.id,
           username,
-          fitness_goal: 'maintain',
-          activity_level: 'moderate',
+          fitness_goal: "maintain",
+          activity_level: "moderate",
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         });
         await saveMockDb(db);
 
         const session = getMockSession().session;
-        triggerAuthChange('SIGNED_IN', session);
+        triggerAuthChange("SIGNED_IN", session);
         return { data: { user, session }, error: null };
       },
       async signInWithPassword({ email }: any) {
-        const username = email.split('@')[0];
+        const username = email.split("@")[0];
         const user = {
-          id: `mock-user-${email.replace(/[^a-zA-Z0-9]/g, '') || 'default'}`,
+          id: `mock-user-${email.replace(/[^a-zA-Z0-9]/g, "") || "default"}`,
           email,
           user_metadata: { username },
           created_at: new Date().toISOString(),
         };
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('mock_supabase_user', JSON.stringify(user));
+        if (typeof window !== "undefined") {
+          localStorage.setItem("mock_supabase_user", JSON.stringify(user));
         }
 
         const db = await loadMockDb();
@@ -353,8 +367,8 @@ export function createMockSupabaseClient() {
             id: user.id,
             user_id: user.id,
             username,
-            fitness_goal: 'maintain',
-            activity_level: 'moderate',
+            fitness_goal: "maintain",
+            activity_level: "moderate",
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           });
@@ -362,25 +376,25 @@ export function createMockSupabaseClient() {
         }
 
         const session = getMockSession().session;
-        triggerAuthChange('SIGNED_IN', session);
+        triggerAuthChange("SIGNED_IN", session);
         return { data: { user, session }, error: null };
       },
       async signOut() {
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('mock_supabase_user');
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("mock_supabase_user");
         }
-        triggerAuthChange('SIGNED_OUT', null);
+        triggerAuthChange("SIGNED_OUT", null);
         return { error: null };
       },
       async signInWithOAuth({ options }: any) {
         const user = {
-          id: 'mock-google-user',
-          email: 'google.user@example.com',
-          user_metadata: { username: 'GoogleUser' },
+          id: "mock-google-user",
+          email: "google.user@example.com",
+          user_metadata: { username: "GoogleUser" },
           created_at: new Date().toISOString(),
         };
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('mock_supabase_user', JSON.stringify(user));
+        if (typeof window !== "undefined") {
+          localStorage.setItem("mock_supabase_user", JSON.stringify(user));
         }
 
         const db = await loadMockDb();
@@ -390,9 +404,9 @@ export function createMockSupabaseClient() {
           db.profiles.push({
             id: user.id,
             user_id: user.id,
-            username: 'GoogleUser',
-            fitness_goal: 'maintain',
-            activity_level: 'moderate',
+            username: "GoogleUser",
+            fitness_goal: "maintain",
+            activity_level: "moderate",
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           });
@@ -400,23 +414,27 @@ export function createMockSupabaseClient() {
         }
 
         const session = getMockSession().session;
-        triggerAuthChange('SIGNED_IN', session);
+        triggerAuthChange("SIGNED_IN", session);
 
-        if (typeof window !== 'undefined') {
-          window.location.href = options?.redirectTo || '/dashboard';
+        if (typeof window !== "undefined") {
+          window.location.href = options?.redirectTo || "/dashboard";
         }
         return { error: null };
-      }
+      },
     },
     from(table: string) {
       return new MockQueryBuilder(table);
-    }
+    },
   };
 }
 
 function createSupabaseClient() {
-  const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || (typeof process !== 'undefined' ? process.env.SUPABASE_URL : undefined);
-  const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || (typeof process !== 'undefined' ? process.env.SUPABASE_PUBLISHABLE_KEY : undefined);
+  const SUPABASE_URL =
+    import.meta.env.VITE_SUPABASE_URL ||
+    (typeof process !== "undefined" ? process.env.SUPABASE_URL : undefined);
+  const SUPABASE_PUBLISHABLE_KEY =
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+    (typeof process !== "undefined" ? process.env.SUPABASE_PUBLISHABLE_KEY : undefined);
 
   if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
     console.warn(`[Supabase] Keys are missing. Booting fallback offline Mock client.`);
@@ -425,10 +443,10 @@ function createSupabaseClient() {
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     auth: {
-      storage: typeof window !== 'undefined' ? localStorage : undefined,
+      storage: typeof window !== "undefined" ? localStorage : undefined,
       persistSession: true,
       autoRefreshToken: true,
-    }
+    },
   });
 }
 
@@ -440,5 +458,3 @@ export const supabase = new Proxy({} as any, {
     return Reflect.get(_supabase, prop, receiver);
   },
 });
-
-

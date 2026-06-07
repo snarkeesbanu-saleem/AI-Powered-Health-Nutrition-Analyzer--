@@ -74,7 +74,14 @@ function bmiCategory(bmi: number) {
   return { label: "Obese", color: "text-red-400" };
 }
 
-function getDailyCalorieTarget(profile: { age?: number | null; gender?: string | null; weight_kg?: number | null; height_cm?: number | null; activity_level?: string | null; fitness_goal?: string | null }) {
+function getDailyCalorieTarget(profile: {
+  age?: number | null;
+  gender?: string | null;
+  weight_kg?: number | null;
+  height_cm?: number | null;
+  activity_level?: string | null;
+  fitness_goal?: string | null;
+}) {
   const { age, gender, weight_kg, height_cm, activity_level, fitness_goal } = profile;
   if (!age || !gender || !weight_kg || !height_cm) return 2000;
 
@@ -111,11 +118,14 @@ function DashboardPage() {
 
   const bmi = useMemo(
     () => calculateBMI(profile?.weight_kg ?? null, profile?.height_cm ?? null),
-    [profile]
+    [profile],
   );
 
   const calorieTarget = useMemo(() => getDailyCalorieTarget(profile || {}), [profile]);
-  const caloriePercent = Math.min(100, Math.round(((summary?.totals.calories ?? 0) / calorieTarget) * 100));
+  const caloriePercent = Math.min(
+    100,
+    Math.round(((summary?.totals.calories ?? 0) / calorieTarget) * 100),
+  );
 
   const waterTarget = 2500;
   const waterPercent = Math.min(100, Math.round(((summary?.water_ml ?? 0) / waterTarget) * 100));
@@ -131,9 +141,24 @@ function DashboardPage() {
 
   const quickActions = [
     { to: "/analyze", label: "Analyze Food", icon: Camera, color: "bg-primary/10 text-primary" },
-    { to: "/history", label: "View History", icon: History, color: "bg-neon-blue/10 text-neon-blue" },
-    { to: "/bmi", label: "BMI Calculator", icon: Activity, color: "bg-neon-purple/10 text-neon-purple" },
-    { to: "/recommendations", label: "Recommendations", icon: Sparkles, color: "bg-chart-3/10 text-chart-3" },
+    {
+      to: "/history",
+      label: "View History",
+      icon: History,
+      color: "bg-neon-blue/10 text-neon-blue",
+    },
+    {
+      to: "/bmi",
+      label: "BMI Calculator",
+      icon: Activity,
+      color: "bg-neon-purple/10 text-neon-purple",
+    },
+    {
+      to: "/recommendations",
+      label: "Recommendations",
+      icon: Sparkles,
+      color: "bg-chart-3/10 text-chart-3",
+    },
     { to: "/weight", label: "Track Weight", icon: Scale, color: "bg-chart-5/10 text-chart-5" },
   ];
 
@@ -159,7 +184,7 @@ function DashboardPage() {
       <div className="mb-8 rounded-2xl border border-primary/25 bg-primary/5 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm relative overflow-hidden">
         <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-primary/10 blur-xl" />
         <div className="absolute -right-10 -bottom-10 h-32 w-32 rounded-full bg-orange-500/10 blur-xl" />
-        
+
         <div className="relative flex items-start gap-4">
           <div className="hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-orange-500 text-white shadow-md">
             <Mic className="h-6 w-6 animate-pulse" />
@@ -167,16 +192,21 @@ function DashboardPage() {
           <div className="space-y-1">
             <h4 className="text-sm font-bold text-foreground flex items-center gap-2">
               🎙️ AI Voice-to-Text Health Assistant
-              <span className="inline-block rounded bg-primary/20 px-1.5 py-0.5 text-[9px] font-bold text-primary font-mono">NEW</span>
+              <span className="inline-block rounded bg-primary/20 px-1.5 py-0.5 text-[9px] font-bold text-primary font-mono">
+                NEW
+              </span>
             </h4>
             <p className="max-w-2xl text-xs leading-relaxed text-muted-foreground">
-              Speak naturally to log food, water intake, or check-in weight progress. Simply say things like <em>"I had chicken biryani for lunch"</em>, <em>"Drank 500ml of water"</em>, or <em>"My weight is 68.5"</em> and Gemini AI will automatically record it!
+              Speak naturally to log food, water intake, or check-in weight progress. Simply say
+              things like <em>"I had chicken biryani for lunch"</em>,{" "}
+              <em>"Drank 500ml of water"</em>, or <em>"My weight is 68.5"</em> and Gemini AI will
+              automatically record it!
             </p>
           </div>
         </div>
 
         <button
-          onClick={() => document.getElementById('voice_logger_fab')?.click()}
+          onClick={() => document.getElementById("voice_logger_fab")?.click()}
           className="relative shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-tr from-primary to-orange-500 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.03] active:scale-95 cursor-pointer max-w-max"
         >
           <Mic className="h-4 w-4" />
@@ -227,16 +257,16 @@ function DashboardPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {bmi ? bmi.toFixed(1) : "—"}
-            </div>
+            <div className="text-2xl font-bold text-foreground">{bmi ? bmi.toFixed(1) : "—"}</div>
             {bmi && (
               <p className={`mt-1 text-xs font-medium ${bmiCategory(bmi).color}`}>
                 {bmiCategory(bmi).label}
               </p>
             )}
             {!bmi && (
-              <p className="mt-1 text-xs text-muted-foreground">Set your weight & height in profile</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Set your weight & height in profile
+              </p>
             )}
           </CardContent>
         </Card>
@@ -256,7 +286,9 @@ function DashboardPage() {
               {weightTrend === "stable" && <Minus className="h-5 w-5 text-muted-foreground" />}
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              {profile?.target_weight_kg ? `Target: ${profile.target_weight_kg} kg` : "No target set"}
+              {profile?.target_weight_kg
+                ? `Target: ${profile.target_weight_kg} kg`
+                : "No target set"}
             </p>
           </CardContent>
         </Card>
@@ -317,7 +349,9 @@ function DashboardPage() {
                   to={action.to}
                   className="flex flex-col items-center gap-2 rounded-lg border border-border/50 bg-secondary/30 p-3 text-center transition-colors hover:bg-secondary/50"
                 >
-                  <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${action.color}`}>
+                  <div
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${action.color}`}
+                  >
                     <action.icon className="h-5 w-5" />
                   </div>
                   <span className="text-xs font-medium text-foreground">{action.label}</span>
@@ -357,7 +391,9 @@ function DashboardPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-3">
                 <p className="text-sm font-semibold text-foreground">{dish.name}</p>
-                <p className="text-[11px] text-muted-foreground">{dish.calories} kcal · {dish.tag}</p>
+                <p className="text-[11px] text-muted-foreground">
+                  {dish.calories} kcal · {dish.tag}
+                </p>
               </div>
             </Link>
           ))}

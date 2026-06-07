@@ -9,12 +9,12 @@ const analyzeSchema = z.object({
 
 export const analyzeFoodImage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => analyzeSchema.parse(input))
+  .validator((input) => analyzeSchema.parse(input))
   .handler(async ({ data }) => {
     const API_KEY = process.env.AI_API_KEY || process.env.GEMINI_API_KEY;
     if (!API_KEY) {
       console.warn("No AI API keys configured. Returning simulated food analysis.");
-      
+
       const fallbackDishes = [
         {
           food_name: "Idli Sambar",
@@ -28,17 +28,24 @@ export const analyzeFoodImage = createServerFn({ method: "POST" })
             fats_g: 1.5,
             fiber_g: 5,
             sugar_g: 3,
-            sodium_mg: 390
+            sodium_mg: 390,
           },
           micronutrients: {
             iron_mg: 1.2,
             calcium_mg: 30,
             vitamin_c_mg: 5,
-            vitamin_a_mcg: 8
+            vitamin_a_mcg: 8,
           },
           health_tags: ["low_fat", "vegetarian", "fermented_health", "heart_friendly"],
-          ingredients: ["Fermented rice batter", "Black lentils", "Toor dal", "Mixed vegetables", "Sambar spices"],
-          description: "Steamed fermented rice cakes served with a vegetable-packed tangy lentil soup. Extremely easy to digest, nutritious, and very low in cholesterol."
+          ingredients: [
+            "Fermented rice batter",
+            "Black lentils",
+            "Toor dal",
+            "Mixed vegetables",
+            "Sambar spices",
+          ],
+          description:
+            "Steamed fermented rice cakes served with a vegetable-packed tangy lentil soup. Extremely easy to digest, nutritious, and very low in cholesterol.",
         },
         {
           food_name: "Masala Dosa",
@@ -52,17 +59,25 @@ export const analyzeFoodImage = createServerFn({ method: "POST" })
             fats_g: 9,
             fiber_g: 4,
             sugar_g: 2,
-            sodium_mg: 480
+            sodium_mg: 480,
           },
           micronutrients: {
             iron_mg: 1.8,
             calcium_mg: 45,
             vitamin_c_mg: 3,
-            vitamin_a_mcg: 10
+            vitamin_a_mcg: 10,
           },
           health_tags: ["vegetarian", "moderate_fat", "sodium_conscious"],
-          ingredients: ["Rice batter", "Urad dal", "Potato dry masala", "Ghee/Oil", "Mustard seeds", "Curry leaves"],
-          description: "A popular South Indian crispy rice crepe stuffed with a mildly spiced dry potato filling, served with savory lentil sambar and fresh coconut chutney."
+          ingredients: [
+            "Rice batter",
+            "Urad dal",
+            "Potato dry masala",
+            "Ghee/Oil",
+            "Mustard seeds",
+            "Curry leaves",
+          ],
+          description:
+            "A popular South Indian crispy rice crepe stuffed with a mildly spiced dry potato filling, served with savory lentil sambar and fresh coconut chutney.",
         },
         {
           food_name: "Paneer Butter Masala with Roti",
@@ -76,18 +91,26 @@ export const analyzeFoodImage = createServerFn({ method: "POST" })
             fats_g: 26,
             fiber_g: 7,
             sugar_g: 8,
-            sodium_mg: 620
+            sodium_mg: 620,
           },
           micronutrients: {
             iron_mg: 2.5,
             calcium_mg: 340,
             vitamin_c_mg: 6,
-            vitamin_a_mcg: 120
+            vitamin_a_mcg: 120,
           },
           health_tags: ["high_protein", "calcium_rich", "vegetarian"],
-          ingredients: ["Paneer cubes", "Tomato-onion gravy", "Cashews", "Butter", "Whole wheat flour", "Spices"],
-          description: "Rich Indian cottage cheese curry cooked in a cream-infused spiced tomato-onion reduction sauce paired with stone-ground flatbreads."
-        }
+          ingredients: [
+            "Paneer cubes",
+            "Tomato-onion gravy",
+            "Cashews",
+            "Butter",
+            "Whole wheat flour",
+            "Spices",
+          ],
+          description:
+            "Rich Indian cottage cheese curry cooked in a cream-infused spiced tomato-onion reduction sauce paired with stone-ground flatbreads.",
+        },
       ];
 
       // Pick a random dish from this high-fidelity fallback list
@@ -145,8 +168,14 @@ Important notes:
             {
               role: "user",
               content: [
-                { type: "text", text: "Analyze this food image and return the nutrition information as JSON." },
-                { type: "image_url", image_url: { url: `data:${data.mimeType};base64,${data.imageBase64}` } },
+                {
+                  type: "text",
+                  text: "Analyze this food image and return the nutrition information as JSON.",
+                },
+                {
+                  type: "image_url",
+                  image_url: { url: `data:${data.mimeType};base64,${data.imageBase64}` },
+                },
               ],
             },
           ],
@@ -164,30 +193,37 @@ Important notes:
       content = result.choices?.[0]?.message?.content || "";
     } else {
       // Direct official Google Gemini REST API call with inline vision data
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text:
+                      systemPrompt +
+                      "\nAnalyze this food image and return the nutrition information as JSON.",
+                  },
+                  {
+                    inlineData: {
+                      mimeType: data.mimeType || "image/jpeg",
+                      data: data.imageBase64,
+                    },
+                  },
+                ],
+              },
+            ],
+            generationConfig: {
+              responseMimeType: "application/json",
+            },
+          }),
         },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                { text: systemPrompt + "\nAnalyze this food image and return the nutrition information as JSON." },
-                {
-                  inlineData: {
-                    mimeType: data.mimeType || "image/jpeg",
-                    data: data.imageBase64
-                  }
-                }
-              ]
-            }
-          ],
-          generationConfig: {
-            responseMimeType: "application/json"
-          }
-        }),
-      });
+      );
 
       if (!response.ok) {
         const text = await response.text();

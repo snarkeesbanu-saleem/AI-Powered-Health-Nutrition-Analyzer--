@@ -8,14 +8,14 @@ const voiceInputSchema = z.object({
 
 export const parseVoiceLog = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => voiceInputSchema.parse(input))
+  .validator((input) => voiceInputSchema.parse(input))
   .handler(async ({ data }) => {
     const { text } = data;
     const API_KEY = process.env.AI_API_KEY || process.env.GEMINI_API_KEY;
 
     if (!API_KEY) {
       console.warn("No AI API keys configured. Returning simulated voice analysis.");
-      
+
       const lower = text.toLowerCase();
       if (lower.includes("water") || lower.includes("drink") || lower.includes("glass")) {
         // Extract water
@@ -25,8 +25,8 @@ export const parseVoiceLog = createServerFn({ method: "POST" })
           result: {
             type: "water",
             water_ml: amount,
-            summary: `Parsed water intake: ${amount} ml`
-          }
+            summary: `Parsed water intake: ${amount} ml`,
+          },
         };
       } else if (lower.includes("weight") || lower.includes("kilo") || lower.includes("kg")) {
         const numMatch = lower.match(/\d+(\.\d+)?/);
@@ -35,8 +35,8 @@ export const parseVoiceLog = createServerFn({ method: "POST" })
           result: {
             type: "weight",
             weight_kg: weight,
-            summary: `Parsed weight entry: ${weight} kg`
-          }
+            summary: `Parsed weight entry: ${weight} kg`,
+          },
         };
       } else {
         // Default to food
@@ -57,10 +57,10 @@ export const parseVoiceLog = createServerFn({ method: "POST" })
               fiber_g: 3,
               sugar_g: 4,
               sodium_mg: 380,
-              notes: `Simulated analysis of: "${text}"`
+              notes: `Simulated analysis of: "${text}"`,
             },
-            summary: `Parsed food: "${foodName}" (~350 kcal)`
-          }
+            summary: `Parsed food: "${foodName}" (~350 kcal)`,
+          },
         };
       }
     }
@@ -124,7 +124,7 @@ Return ONLY pure JSON. No backticks. No markdown.`;
             model: "google/gemini-2.5-pro",
             messages: [
               { role: "system", content: systemPrompt },
-              { role: "user", content: `Please parse this spoken text transcript: "${text}"` }
+              { role: "user", content: `Please parse this spoken text transcript: "${text}"` },
             ],
             max_tokens: 1024,
             temperature: 0.1,
@@ -138,24 +138,29 @@ Return ONLY pure JSON. No backticks. No markdown.`;
           throw new Error("AI gateway failed");
         }
       } else {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: [
+                    {
+                      text: systemPrompt + `\nPlease parse this spoken text transcript: "${text}"`,
+                    },
+                  ],
+                },
+              ],
+              generationConfig: {
+                responseMimeType: "application/json",
+              },
+            }),
           },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  { text: systemPrompt + `\nPlease parse this spoken text transcript: "${text}"` }
-                ]
-              }
-            ],
-            generationConfig: {
-              responseMimeType: "application/json"
-            }
-          }),
-        });
+        );
 
         if (response.ok) {
           const result = await response.json();
@@ -189,8 +194,8 @@ Return ONLY pure JSON. No backticks. No markdown.`;
       return {
         result: {
           type: "unknown",
-          summary: `Sorry, we had trouble processing the AI parsing. We heard: "${text}"`
-        }
+          summary: `Sorry, we had trouble processing the AI parsing. We heard: "${text}"`,
+        },
       };
     }
   });

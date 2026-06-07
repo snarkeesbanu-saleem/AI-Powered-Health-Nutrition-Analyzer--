@@ -36,8 +36,7 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-  }, [error]);
+  useEffect(() => {}, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -80,9 +79,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "AI-powered-Health-Nutrition-Analyzer" },
       { property: "og:title", content: "AI-powered-Health-Nutrition-Analyzer" },
       { name: "twitter:title", content: "AI-powered-Health-Nutrition-Analyzer" },
-      { name: "description", content: "AI-powered app analyzes food nutrition from images and offers personalized diet recommendations." },
-      { property: "og:description", content: "AI-powered app analyzes food nutrition from images and offers personalized diet recommendations." },
-      { name: "twitter:description", content: "AI-powered app analyzes food nutrition from images and offers personalized diet recommendations." },
+      {
+        name: "description",
+        content:
+          "AI-powered app analyzes food nutrition from images and offers personalized diet recommendations.",
+      },
+      {
+        property: "og:description",
+        content:
+          "AI-powered app analyzes food nutrition from images and offers personalized diet recommendations.",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "AI-powered app analyzes food nutrition from images and offers personalized diet recommendations.",
+      },
       { property: "og:image", content: "/assets/auth-bg.jpg" },
       { name: "twitter:image", content: "/assets/auth-bg.jpg" },
     ],

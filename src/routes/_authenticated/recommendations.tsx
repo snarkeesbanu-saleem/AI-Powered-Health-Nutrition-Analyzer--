@@ -60,7 +60,10 @@ function RecommendationsPage() {
     <div className="mx-auto max-w-3xl px-4 py-8">
       <div className="mb-6 flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground" style={{ fontFamily: "'Lora', serif" }}>
+          <h1
+            className="text-2xl font-bold text-foreground"
+            style={{ fontFamily: "'Lora', serif" }}
+          >
             AI Recommendations
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -76,7 +79,8 @@ function RecommendationsPage() {
             <div>
               <p className="text-sm font-medium text-foreground">Complete Your Profile</p>
               <p className="text-xs text-muted-foreground">
-                Set your age, weight, height, and goals in the BMI page for more accurate recommendations.
+                Set your age, weight, height, and goals in the BMI page for more accurate
+                recommendations.
               </p>
             </div>
           </CardContent>
@@ -88,7 +92,9 @@ function RecommendationsPage() {
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
             <Sparkles className="h-10 w-10 text-muted-foreground/50" />
             <p className="text-sm text-muted-foreground">No recommendations yet.</p>
-            <p className="text-xs text-muted-foreground">Log some meals and complete your profile to get AI-powered advice.</p>
+            <p className="text-xs text-muted-foreground">
+              Log some meals and complete your profile to get AI-powered advice.
+            </p>
           </CardContent>
         </Card>
       )}
@@ -115,8 +121,16 @@ function RecommendationsPage() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  <TargetItem label="Calories" value={`${recs.daily_targets.calories} kcal`} icon={<Flame className="h-4 w-4" />} />
-                  <TargetItem label="Protein" value={`${recs.daily_targets.protein_g}g`} icon={<Utensils className="h-4 w-4" />} />
+                  <TargetItem
+                    label="Calories"
+                    value={`${recs.daily_targets.calories} kcal`}
+                    icon={<Flame className="h-4 w-4" />}
+                  />
+                  <TargetItem
+                    label="Protein"
+                    value={`${recs.daily_targets.protein_g}g`}
+                    icon={<Utensils className="h-4 w-4" />}
+                  />
                   <TargetItem label="Carbs" value={`${recs.daily_targets.carbs_g}g`} />
                   <TargetItem label="Fats" value={`${recs.daily_targets.fats_g}g`} />
                   <TargetItem label="Fiber" value={`${recs.daily_targets.fiber_g}g`} />
@@ -137,14 +151,20 @@ function RecommendationsPage() {
                 {recs.recommendations.map((rec: any, i: number) => (
                   <div key={i} className="rounded-lg border border-border/30 bg-secondary/20 p-3">
                     <div className="flex items-center gap-2">
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase ${
-                        rec.priority === "high" ? "bg-red-400/10 text-red-400" :
-                        rec.priority === "medium" ? "bg-yellow-400/10 text-yellow-400" :
-                        "bg-green-400/10 text-green-400"
-                      }`}>
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase ${
+                          rec.priority === "high"
+                            ? "bg-red-400/10 text-red-400"
+                            : rec.priority === "medium"
+                              ? "bg-yellow-400/10 text-yellow-400"
+                              : "bg-green-400/10 text-green-400"
+                        }`}
+                      >
                         {rec.priority}
                       </span>
-                      <span className="text-[10px] uppercase text-muted-foreground">{rec.category}</span>
+                      <span className="text-[10px] uppercase text-muted-foreground">
+                        {rec.category}
+                      </span>
                     </div>
                     <p className="mt-1 text-sm font-semibold text-foreground">{rec.title}</p>
                     <p className="text-xs text-muted-foreground">{rec.description}</p>
@@ -165,15 +185,13 @@ function RecommendationsPage() {
                 {recs.meal_plan.breakfast && (
                   <MealItem label="Breakfast" value={recs.meal_plan.breakfast} />
                 )}
-                {recs.meal_plan.lunch && (
-                  <MealItem label="Lunch" value={recs.meal_plan.lunch} />
-                )}
-                {recs.meal_plan.dinner && (
-                  <MealItem label="Dinner" value={recs.meal_plan.dinner} />
-                )}
+                {recs.meal_plan.lunch && <MealItem label="Lunch" value={recs.meal_plan.lunch} />}
+                {recs.meal_plan.dinner && <MealItem label="Dinner" value={recs.meal_plan.dinner} />}
                 {recs.meal_plan.snacks && recs.meal_plan.snacks.length > 0 && (
                   <div className="rounded-lg border border-border/30 bg-secondary/20 p-3">
-                    <span className="text-[10px] font-medium uppercase text-muted-foreground">Snacks</span>
+                    <span className="text-[10px] font-medium uppercase text-muted-foreground">
+                      Snacks
+                    </span>
                     <ul className="mt-1 list-inside list-disc text-xs text-foreground">
                       {recs.meal_plan.snacks.map((s: string, i: number) => (
                         <li key={i}>{s}</li>
@@ -194,10 +212,15 @@ function RecommendationsPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {recs.healthier_alternatives.map((alt: any, i: number) => (
-                  <div key={i} className="flex items-start gap-3 rounded-lg border border-border/30 bg-secondary/20 p-3">
+                  <div
+                    key={i}
+                    className="flex items-start gap-3 rounded-lg border border-border/30 bg-secondary/20 p-3"
+                  >
                     <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                     <div>
-                      <p className="text-xs text-muted-foreground">Instead of: <span className="text-foreground">{alt.current}</span></p>
+                      <p className="text-xs text-muted-foreground">
+                        Instead of: <span className="text-foreground">{alt.current}</span>
+                      </p>
                       <p className="text-sm font-medium text-foreground">Try: {alt.alternative}</p>
                       <p className="text-xs text-muted-foreground">{alt.reason}</p>
                     </div>
@@ -212,7 +235,15 @@ function RecommendationsPage() {
   );
 }
 
-function TargetItem({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
+function TargetItem({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string;
+  icon?: React.ReactNode;
+}) {
   return (
     <div className="flex items-center gap-2 rounded-lg border border-border/30 bg-secondary/20 p-2.5">
       {icon && <span className="text-primary">{icon}</span>}

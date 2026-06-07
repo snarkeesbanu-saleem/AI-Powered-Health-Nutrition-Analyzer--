@@ -7,24 +7,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  Mic, 
-  MicOff, 
-  X, 
-  Sparkles, 
-  Scale, 
-  Droplets, 
-  Flame, 
-  Beef, 
-  Wheat, 
-  Droplet, 
-  Loader2, 
-  CheckCircle2, 
-  Utensils, 
-  Keyboard, 
+import {
+  Mic,
+  MicOff,
+  X,
+  Sparkles,
+  Scale,
+  Droplets,
+  Flame,
+  Beef,
+  Wheat,
+  Droplet,
+  Loader2,
+  CheckCircle2,
+  Utensils,
+  Keyboard,
   Check,
   RotateCcw,
-  Plus
+  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -50,7 +50,8 @@ export function VoiceLogger() {
 
   // Initialize Speech Recognition
   useEffect(() => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setRecognitionSupported(false);
       setIsKeyboardMode(true);
@@ -79,7 +80,9 @@ export function VoiceLogger() {
     rec.onerror = (event: any) => {
       console.error("Speech Recognition error:", event);
       if (event.error === "not-allowed") {
-        toast.error("Microphone access is denied. Please enable mic permissions or use manual keyboard mode.");
+        toast.error(
+          "Microphone access is denied. Please enable mic permissions or use manual keyboard mode.",
+        );
         setIsKeyboardMode(true);
       } else {
         toast.error(`Recognition error: ${event.error}`);
@@ -156,21 +159,21 @@ export function VoiceLogger() {
             sugar: food_data.sugar_g || 0,
             sodium: food_data.sodium_mg || 0,
             vitamins: {},
-            notes: food_data.notes || "Logged via Speech Assistant"
-          }
+            notes: food_data.notes || "Logged via Speech Assistant",
+          },
         });
         queryClient.invalidateQueries({ queryKey: ["food-logs"] });
       } else if (parsedResult.type === "water" && parsedResult.water_ml) {
         await addWaterFn({
           data: {
-            amount_ml: parsedResult.water_ml
-          }
+            amount_ml: parsedResult.water_ml,
+          },
         });
       } else if (parsedResult.type === "weight" && parsedResult.weight_kg) {
         await addWeightFn({
           data: {
-            weight_kg: parsedResult.weight_kg
-          }
+            weight_kg: parsedResult.weight_kg,
+          },
         });
         queryClient.invalidateQueries({ queryKey: ["weight-history"] });
       }
@@ -235,7 +238,6 @@ export function VoiceLogger() {
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-background/80 backdrop-blur-md transition-all duration-300">
           <div className="relative w-full max-w-2xl rounded-t-3xl border-t border-border/60 bg-gradient-to-b from-card to-background p-6 shadow-2xl space-y-6 md:mb-6 md:rounded-3xl md:border">
-            
             {/* Header section of overlay */}
             <div className="flex items-center justify-between border-b border-border/40 pb-4">
               <div className="flex items-center gap-2.5">
@@ -243,11 +245,15 @@ export function VoiceLogger() {
                   <Sparkles className="h-5 w-5 animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-foreground font-sans">AI Voice-to-Text Log</h3>
-                  <p className="text-xs text-muted-foreground">Log food, water or weight with speech</p>
+                  <h3 className="text-lg font-bold text-foreground font-sans">
+                    AI Voice-to-Text Log
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Log food, water or weight with speech
+                  </p>
                 </div>
               </div>
-              
+
               <button
                 onClick={() => {
                   recognitionRef.current?.stop();
@@ -268,19 +274,21 @@ export function VoiceLogger() {
                   {isListening ? (
                     <div className="flex items-center justify-center gap-1 h-12">
                       {[1, 2, 3, 4, 5, 4, 3, 2, 1].map((index) => (
-                        <span 
-                          key={index} 
+                        <span
+                          key={index}
                           className="w-1.5 bg-primary rounded-full"
                           style={{
                             animation: "waveGrow 1.2s ease-in-out infinite",
-                            animationDelay: `${index * 0.1}s`
+                            animationDelay: `${index * 0.1}s`,
                           }}
                         />
                       ))}
                     </div>
                   ) : (
                     <div className="text-xs text-muted-foreground italic font-mono select-none">
-                      {isKeyboardMode ? "Manual parsing mode active" : "Tap microphone to begin dictating!"}
+                      {isKeyboardMode
+                        ? "Manual parsing mode active"
+                        : "Tap microphone to begin dictating!"}
                     </div>
                   )}
 
@@ -290,9 +298,9 @@ export function VoiceLogger() {
                       <button
                         onClick={toggleListening}
                         className={`relative flex h-20 w-20 items-center justify-center rounded-full transition-all duration-300 ${
-                          isListening 
-                          ? "bg-rose-500 text-white" 
-                          : "bg-primary/10 border-2 border-primary/20 text-primary hover:bg-primary/20"
+                          isListening
+                            ? "bg-rose-500 text-white"
+                            : "bg-primary/10 border-2 border-primary/20 text-primary hover:bg-primary/20"
                         }`}
                         style={isListening ? { animation: "customPulse 2s infinite" } : {}}
                       >
@@ -311,8 +319,8 @@ export function VoiceLogger() {
                       {isListening ? "Listening closely..." : "Speak naturally!"}
                     </span>
                     <p className="max-w-md text-xs text-muted-foreground">
-                      {isListening 
-                        ? "Say things like 'I ate 2 Wheat Dosa for breakfast' or 'I just drank a couple of water cups'" 
+                      {isListening
+                        ? "Say things like 'I ate 2 Wheat Dosa for breakfast' or 'I just drank a couple of water cups'"
                         : "Tell AI what you had or your metrics. Example: 'Water 300ml' or 'my weight is 72.8 kilograms'."}
                     </p>
                   </div>
@@ -323,11 +331,15 @@ export function VoiceLogger() {
               {!parsedResult && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs text-muted-foreground font-medium">Spoken or typed transcription:</Label>
+                    <Label className="text-xs text-muted-foreground font-medium">
+                      Spoken or typed transcription:
+                    </Label>
                     {!recognitionSupported ? (
-                      <span className="text-[10px] bg-red-500/10 text-red-400 px-1.5 py-0.5 rounded font-mono">Microphone Not Supported (Use keyboard)</span>
+                      <span className="text-[10px] bg-red-500/10 text-red-400 px-1.5 py-0.5 rounded font-mono">
+                        Microphone Not Supported (Use keyboard)
+                      </span>
                     ) : (
-                      <button 
+                      <button
                         type="button"
                         onClick={() => setIsKeyboardMode(!isKeyboardMode)}
                         className="text-[11px] text-primary hover:underline flex items-center gap-1"
@@ -360,21 +372,23 @@ export function VoiceLogger() {
                   {/* Preset Shortcuts */}
                   {!manualText && !isListening && (
                     <div className="pt-2">
-                      <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wide">Quick Try-Outs:</span>
+                      <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wide">
+                        Quick Try-Outs:
+                      </span>
                       <div className="mt-1.5 flex flex-wrap gap-2">
-                        <button 
+                        <button
                           onClick={() => setSampleVoice("I had a Masala Dosa for breakfast")}
                           className="rounded-full border border-border bg-secondary/30 px-2.5 py-1 text-left text-[11px] text-foreground hover:bg-secondary transition-colors"
                         >
                           "I had Masala Dosa"
                         </button>
-                        <button 
+                        <button
                           onClick={() => setSampleVoice("Drank two cups of water")}
                           className="rounded-full border border-border bg-secondary/30 px-2.5 py-1 text-left text-[11px] text-foreground hover:bg-secondary transition-colors"
                         >
                           "Drank two water cups"
                         </button>
-                        <button 
+                        <button
                           onClick={() => setSampleVoice("Logged weight 68.4 kg")}
                           className="rounded-full border border-border bg-secondary/30 px-2.5 py-1 text-left text-[11px] text-foreground hover:bg-secondary transition-colors"
                         >
@@ -386,12 +400,16 @@ export function VoiceLogger() {
 
                   {/* Trigger Action button */}
                   {manualText && !isListening && (
-                    <Button 
-                      onClick={() => handleParseText(manualText)} 
-                      disabled={parsing} 
+                    <Button
+                      onClick={() => handleParseText(manualText)}
+                      disabled={parsing}
                       className="w-full gap-2 shadow-lg shadow-primary/20 brightness-105"
                     >
-                      {parsing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                      {parsing ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Sparkles className="h-4 w-4" />
+                      )}
                       {parsing ? "Parsing Speech with AI..." : "Analyze Speech with AI"}
                     </Button>
                   )}
@@ -402,7 +420,9 @@ export function VoiceLogger() {
               {parsing && (
                 <div className="flex flex-col items-center justify-center p-8 space-y-3">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                  <span className="text-sm font-medium text-muted-foreground">Gemini AI is parsing your health dictation...</span>
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Gemini AI is parsing your health dictation...
+                  </span>
                 </div>
               )}
 
@@ -410,8 +430,10 @@ export function VoiceLogger() {
               {parsedResult && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs uppercase tracking-wider font-bold text-muted-foreground font-mono">Recognized Entry</span>
-                    <button 
+                    <span className="text-xs uppercase tracking-wider font-bold text-muted-foreground font-mono">
+                      Recognized Entry
+                    </span>
+                    <button
                       onClick={resetState}
                       className="text-xs text-primary hover:underline flex items-center gap-1"
                     >
@@ -421,7 +443,6 @@ export function VoiceLogger() {
 
                   <Card className="border-border bg-card shadow-sm overflow-hidden">
                     <CardContent className="p-4 space-y-4">
-                      
                       {/* Overall Text Representation */}
                       <p className="text-sm font-medium text-foreground bg-secondary/20 p-2.5 rounded border border-border/40 italic">
                         "{parsedResult.summary}"
@@ -445,31 +466,40 @@ export function VoiceLogger() {
                               <div className="text-[10px] text-muted-foreground uppercase flex items-center justify-center gap-1">
                                 <Flame className="h-3 w-3 text-primary" /> Calories
                               </div>
-                              <div className="text-sm font-bold mt-0.5">{parsedResult.food_data.calories} kcal</div>
+                              <div className="text-sm font-bold mt-0.5">
+                                {parsedResult.food_data.calories} kcal
+                              </div>
                             </div>
                             <div className="rounded-lg bg-secondary/30 p-2.5 border border-border/30">
                               <div className="text-[10px] text-muted-foreground uppercase flex items-center justify-center gap-1">
                                 <Beef className="h-3 w-3 text-neon-blue" /> Protein
                               </div>
-                              <div className="text-sm font-bold mt-0.5 text-neon-blue">{parsedResult.food_data.protein_g}g</div>
+                              <div className="text-sm font-bold mt-0.5 text-neon-blue">
+                                {parsedResult.food_data.protein_g}g
+                              </div>
                             </div>
                             <div className="rounded-lg bg-secondary/30 p-2.5 border border-border/30">
                               <div className="text-[10px] text-muted-foreground uppercase flex items-center justify-center gap-1">
                                 <Wheat className="h-3 w-3 text-neon-purple" /> Carbs
                               </div>
-                              <div className="text-sm font-bold mt-0.5 text-neon-purple">{parsedResult.food_data.carbs_g}g</div>
+                              <div className="text-sm font-bold mt-0.5 text-neon-purple">
+                                {parsedResult.food_data.carbs_g}g
+                              </div>
                             </div>
                             <div className="rounded-lg bg-secondary/30 p-2.5 border border-border/30">
                               <div className="text-[10px] text-muted-foreground uppercase flex items-center justify-center gap-1">
                                 <Droplet className="h-3 w-3 text-chart-3" /> Fats
                               </div>
-                              <div className="text-sm font-bold mt-0.5 text-chart-3">{parsedResult.food_data.fats_g}g</div>
+                              <div className="text-sm font-bold mt-0.5 text-chart-3">
+                                {parsedResult.food_data.fats_g}g
+                              </div>
                             </div>
                           </div>
 
                           {/* Extra info */}
                           <div className="text-xs text-muted-foreground bg-muted/20 p-2 rounded border border-border/30">
-                            Notes / Estimate: {parsedResult.food_data.notes || "Estimated nutrition metrics."}
+                            Notes / Estimate:{" "}
+                            {parsedResult.food_data.notes || "Estimated nutrition metrics."}
                           </div>
                         </div>
                       )}
@@ -481,9 +511,15 @@ export function VoiceLogger() {
                             <Droplets className="h-8 w-8 animate-bounce" />
                           </div>
                           <div>
-                            <span className="text-sm font-bold text-foreground">Water Hydration Intake</span>
-                            <div className="text-xl font-extrabold text-neon-blue mt-0.5">{parsedResult.water_ml} ml</div>
-                            <p className="text-xs text-muted-foreground">Will be logged toward your daily target water hydration</p>
+                            <span className="text-sm font-bold text-foreground">
+                              Water Hydration Intake
+                            </span>
+                            <div className="text-xl font-extrabold text-neon-blue mt-0.5">
+                              {parsedResult.water_ml} ml
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Will be logged toward your daily target water hydration
+                            </p>
                           </div>
                         </div>
                       )}
@@ -495,9 +531,15 @@ export function VoiceLogger() {
                             <Scale className="h-8 w-8" />
                           </div>
                           <div>
-                            <span className="text-sm font-bold text-foreground">Body Weight Metric</span>
-                            <div className="text-xl font-extrabold text-white mt-0.5">{parsedResult.weight_kg} kg</div>
-                            <p className="text-xs text-muted-foreground">Will update your progress history, bmi calculations, and weight trends</p>
+                            <span className="text-sm font-bold text-foreground">
+                              Body Weight Metric
+                            </span>
+                            <div className="text-xl font-extrabold text-white mt-0.5">
+                              {parsedResult.weight_kg} kg
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Will update your progress history, bmi calculations, and weight trends
+                            </p>
                           </div>
                         </div>
                       )}
@@ -505,7 +547,8 @@ export function VoiceLogger() {
                       {/* Display Unknown category card */}
                       {parsedResult.type === "unknown" && (
                         <div className="rounded-lg border border-yellow-500/30 bg-yellow-500/5 p-3 text-xs text-yellow-300">
-                          We parsed your input but couldn't associate it with food, water, or weight logged items. Please say things like:
+                          We parsed your input but couldn't associate it with food, water, or weight
+                          logged items. Please say things like:
                           <ul className="list-disc pl-4 mt-2 space-y-1">
                             <li>"I had a snack of upma at 4 pm"</li>
                             <li>"I drank 250ml water"</li>
@@ -513,34 +556,38 @@ export function VoiceLogger() {
                           </ul>
                         </div>
                       )}
-
                     </CardContent>
                   </Card>
 
                   {/* Submission and Close controls */}
                   <div className="flex gap-2.5">
                     {parsedResult.type !== "unknown" && (
-                      <Button 
-                        onClick={handleSaveParsedData} 
-                        disabled={saving || saved} 
+                      <Button
+                        onClick={handleSaveParsedData}
+                        disabled={saving || saved}
                         className="flex-1 gap-2 bg-gradient-to-tr from-emerald-500 to-green-600 border-none select-none"
                       >
-                        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : saved ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                        {saving ? "Saving Entries..." : saved ? "Successfully Logged!" : "Confirm and Save Log"}
+                        {saving ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : saved ? (
+                          <Check className="h-4 w-4" />
+                        ) : (
+                          <Plus className="h-4 w-4" />
+                        )}
+                        {saving
+                          ? "Saving Entries..."
+                          : saved
+                            ? "Successfully Logged!"
+                            : "Confirm and Save Log"}
                       </Button>
                     )}
-                    <Button 
-                      variant="outline" 
-                      onClick={resetState}
-                      disabled={saving}
-                    >
+                    <Button variant="outline" onClick={resetState} disabled={saving}>
                       Discard & Retry
                     </Button>
                   </div>
                 </div>
               )}
             </div>
-            
           </div>
         </div>
       )}

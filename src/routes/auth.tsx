@@ -72,7 +72,9 @@ function AuthPage() {
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Something went wrong";
       if (mode === "signin" && /invalid login credentials/i.test(message)) {
-        setError("No account found with these details. If you're new, tap \"Sign up\" below to create an account first.");
+        setError(
+          'No account found with these details. If you\'re new, tap "Sign up" below to create an account first.',
+        );
       } else {
         setError(message);
       }
@@ -101,129 +103,139 @@ function AuthPage() {
       />
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
       <div className="relative z-10 flex w-full flex-col items-center">
-      <div className="mb-8 flex items-center gap-2">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-          <Sparkles className="h-6 w-6" />
+        <div className="mb-8 flex items-center gap-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+            <Sparkles className="h-6 w-6" />
+          </div>
+          <span
+            className="text-2xl font-bold text-foreground"
+            style={{ fontFamily: "'Lora', serif" }}
+          >
+            NutriAI
+          </span>
         </div>
-        <span className="text-2xl font-bold text-foreground" style={{ fontFamily: "'Lora', serif" }}>
-          NutriAI
-        </span>
-      </div>
 
-      <Card className="w-full max-w-sm border-border/50 bg-card">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-center text-xl" style={{ fontFamily: "'Lora', serif" }}>
-            {mode === "signin" ? "Welcome back" : "Create your account"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <form onSubmit={handleEmailAuth} className="space-y-3">
-            {mode === "signup" && (
+        <Card className="w-full max-w-sm border-border/50 bg-card">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-center text-xl" style={{ fontFamily: "'Lora', serif" }}>
+              {mode === "signin" ? "Welcome back" : "Create your account"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <form onSubmit={handleEmailAuth} className="space-y-3">
+              {mode === "signup" && (
+                <div className="space-y-1.5">
+                  <Label htmlFor="username" className="text-sm">
+                    Username
+                  </Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="your_username"
+                      className="pl-9"
+                      required={mode === "signup"}
+                    />
+                  </div>
+                </div>
+              )}
               <div className="space-y-1.5">
-                <Label htmlFor="username" className="text-sm">Username</Label>
+                <Label htmlFor="email" className="text-sm">
+                  Email
+                </Label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
-                    id="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="your_username"
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
                     className="pl-9"
-                    required={mode === "signup"}
+                    required
                   />
                 </div>
               </div>
-            )}
-            <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-sm">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="pl-9"
-                  required
-                />
+              <div className="space-y-1.5">
+                <Label htmlFor="password" className="text-sm">
+                  Password
+                </Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="pl-9"
+                    required
+                    minLength={6}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-sm">Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="pl-9"
-                  required
-                  minLength={6}
-                />
+
+              {error && (
+                <p className="rounded-md bg-destructive/10 px-3 py-2 text-xs text-destructive">
+                  {error}
+                </p>
+              )}
+
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Please wait..." : mode === "signin" ? "Sign In" : "Sign Up"}
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </Button>
+            </form>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">or</span>
               </div>
             </div>
 
-            {error && (
-              <p className="rounded-md bg-destructive/10 px-3 py-2 text-xs text-destructive">
-                {error}
-              </p>
-            )}
-
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Please wait..." : mode === "signin" ? "Sign In" : "Sign Up"}
-              <ArrowRight className="ml-1 h-4 w-4" />
+            <Button type="button" variant="outline" className="w-full" onClick={handleGoogleAuth}>
+              <Chrome className="mr-2 h-4 w-4" />
+              Continue with Google
             </Button>
-          </form>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">or</span>
-            </div>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={handleGoogleAuth}
-          >
-            <Chrome className="mr-2 h-4 w-4" />
-            Continue with Google
-          </Button>
-
-          <p className="text-center text-xs text-muted-foreground">
-            {mode === "signin" ? (
-              <>
-                Don&apos;t have an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => { setMode("signup"); setError(""); }}
-                  className="font-medium text-primary hover:underline"
-                >
-                  Sign up
-                </button>
-              </>
-            ) : (
-              <>
-                Already have an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => { setMode("signin"); setError(""); }}
-                  className="font-medium text-primary hover:underline"
-                >
-                  Sign in
-                </button>
-              </>
-            )}
-          </p>
-        </CardContent>
-      </Card>
+            <p className="text-center text-xs text-muted-foreground">
+              {mode === "signin" ? (
+                <>
+                  Don&apos;t have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode("signup");
+                      setError("");
+                    }}
+                    className="font-medium text-primary hover:underline"
+                  >
+                    Sign up
+                  </button>
+                </>
+              ) : (
+                <>
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode("signin");
+                      setError("");
+                    }}
+                    className="font-medium text-primary hover:underline"
+                  >
+                    Sign in
+                  </button>
+                </>
+              )}
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

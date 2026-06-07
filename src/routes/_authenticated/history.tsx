@@ -42,7 +42,9 @@ function HistoryPage() {
 
   const logs = data?.logs || [];
   const grouped = logs.reduce((acc: Record<string, typeof logs>, log) => {
-    const date = log.logged_at || (log.created_at ? new Date(log.created_at).toISOString().split("T")[0] : null);
+    const date =
+      log.logged_at ||
+      (log.created_at ? new Date(log.created_at).toISOString().split("T")[0] : null);
     if (!date) return acc;
     if (!acc[date]) acc[date] = [];
     acc[date].push(log);
@@ -53,10 +55,14 @@ function HistoryPage() {
 
   const mealTypeIcon = (type: string) => {
     switch (type) {
-      case "breakfast": return "🍳";
-      case "lunch": return "🍛";
-      case "dinner": return "🍽️";
-      default: return "🥪";
+      case "breakfast":
+        return "🍳";
+      case "lunch":
+        return "🍛";
+      case "dinner":
+        return "🍽️";
+      default:
+        return "🥪";
     }
   };
 
@@ -76,7 +82,9 @@ function HistoryPage() {
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
             <History className="h-10 w-10 text-muted-foreground/50" />
             <p className="text-sm text-muted-foreground">No food entries yet.</p>
-            <p className="text-xs text-muted-foreground">Analyze your first meal to start tracking!</p>
+            <p className="text-xs text-muted-foreground">
+              Analyze your first meal to start tracking!
+            </p>
           </CardContent>
         </Card>
       )}
@@ -87,7 +95,11 @@ function HistoryPage() {
             <div className="mb-2 flex items-center gap-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <span className="text-xs font-medium text-muted-foreground">
-                {new Date(date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}
+                {new Date(date + "T00:00:00").toLocaleDateString("en-US", {
+                  weekday: "long",
+                  month: "short",
+                  day: "numeric",
+                })}
               </span>
               <span className="text-xs text-muted-foreground">
                 ({grouped[date].reduce((s, l) => s + (l.calories || 0), 0)} kcal)
@@ -99,7 +111,9 @@ function HistoryPage() {
                   <CardContent className="flex items-center gap-3 p-3">
                     <span className="text-lg">{mealTypeIcon(log.meal_type || "snack")}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">{log.food_name}</p>
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {log.food_name}
+                      </p>
                       <div className="flex flex-wrap gap-2 mt-1">
                         <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
                           <Flame className="h-3 w-3" /> {log.calories || 0} kcal

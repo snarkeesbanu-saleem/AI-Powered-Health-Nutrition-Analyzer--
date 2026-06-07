@@ -37,7 +37,7 @@ export const getTodaySummary = createServerFn({ method: "GET" })
         sugar: (acc.sugar ?? 0) + (log.sugar ?? 0),
         sodium: (acc.sodium ?? 0) + (log.sodium ?? 0),
       }),
-      { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, sugar: 0, sodium: 0 }
+      { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, sugar: 0, sodium: 0 },
     );
 
     const waterTotal = (waterLogs || []).reduce((sum, w) => sum + (w.amount_ml || 0), 0);
@@ -47,8 +47,8 @@ export const getTodaySummary = createServerFn({ method: "GET" })
 
 export const getFoodLogs = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { limit?: number; offset?: number }) =>
-    z.object({ limit: z.number().optional(), offset: z.number().optional() }).parse(input)
+  .validator((input: { limit?: number; offset?: number }) =>
+    z.object({ limit: z.number().optional(), offset: z.number().optional() }).parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
@@ -80,7 +80,7 @@ const foodLogSchema = z.object({
 
 export const addFoodLog = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) => foodLogSchema.parse(input))
+  .validator((input) => foodLogSchema.parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { data: log, error } = await supabase
@@ -94,9 +94,7 @@ export const addFoodLog = createServerFn({ method: "POST" })
 
 export const deleteFoodLog = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { id: string }) =>
-    z.object({ id: z.string().uuid() }).parse(input)
-  )
+  .validator((input: { id: string }) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { error } = await supabase
@@ -110,8 +108,8 @@ export const deleteFoodLog = createServerFn({ method: "POST" })
 
 export const addWaterIntake = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { amount_ml: number }) =>
-    z.object({ amount_ml: z.number().min(1).max(5000) }).parse(input)
+  .validator((input: { amount_ml: number }) =>
+    z.object({ amount_ml: z.number().min(1).max(5000) }).parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
@@ -126,8 +124,8 @@ export const addWaterIntake = createServerFn({ method: "POST" })
 
 export const addWeightEntry = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { weight_kg: number }) =>
-    z.object({ weight_kg: z.number().min(1).max(300) }).parse(input)
+  .validator((input: { weight_kg: number }) =>
+    z.object({ weight_kg: z.number().min(1).max(300) }).parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;

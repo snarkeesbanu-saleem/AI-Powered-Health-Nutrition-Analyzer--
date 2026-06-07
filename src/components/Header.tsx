@@ -24,7 +24,9 @@ export function Header() {
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user ? { id: data.user.id, email: data.user.email } : null);
     });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ? { id: session.user.id, email: session.user.email } : null);
     });
     return () => subscription.unsubscribe();
@@ -54,7 +56,10 @@ export function Header() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Sparkles className="h-5 w-5" />
           </div>
-          <span className="text-lg font-semibold tracking-tight text-foreground" style={{ fontFamily: "'Lora', serif" }}>
+          <span
+            className="text-lg font-semibold tracking-tight text-foreground"
+            style={{ fontFamily: "'Lora', serif" }}
+          >
             NutriAI
           </span>
         </Link>
