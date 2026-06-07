@@ -188,7 +188,7 @@ Return ONLY pure JSON. No backticks. No markdown.`;
         }
         throw new Error("Unable to parse voice log JSON output");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("Gemini Parse Transcribe error:", err);
       // Fallback response inside try/catch so user still gets a result
       return {
